@@ -8,8 +8,8 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
-import com.jeremy.deus.ui.state.Creator;
-import com.jeremy.deus.ui.state.Splash;
+import com.jeremy.deus.ui.state.CreatorState;
+import com.jeremy.deus.ui.state.SplashState;
 
 /**
  * An extended singleton version of <code>javax.swing.JFrame</code> that adds
@@ -44,12 +44,13 @@ public class Deus extends JFrame {
 		});
 	}
 
+	private void initiate() {
+		
+	}
+
 	@Override
 	public void pack() {
-		Splash splash = new Splash();
-		splash.register();
-		new Creator().register();
-		splash.enter();
+		initiate();
 		super.pack();
 	}
 
