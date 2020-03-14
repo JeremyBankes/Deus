@@ -2,7 +2,9 @@ package com.jeremy.deus.ui.state;
 
 import java.awt.BorderLayout;
 
+import com.jeremy.deus.assets.Assets;
 import com.jeremy.deus.ui.component.BetterButton;
+import com.jeremy.deus.ui.component.DisplayPanel;
 
 /**
  * 
@@ -13,17 +15,24 @@ import com.jeremy.deus.ui.component.BetterButton;
  */
 public class SplashState extends State {
 
-	private BetterButton startButton;
-
 	public SplashState() {
 		super(new BorderLayout());
 
-		startButton = new BetterButton("Start");
-		startButton.addActionListener(() -> {
+		Assets.loadImage("background", "/background.png");
+		Assets.loadImage("logo", "/logo.png");
+		setBackgroundSizeStrategy(BACKGROUND_REPEAT);
+		setImage(Assets.getImage("background"));
+
+		DisplayPanel display = new DisplayPanel(Assets.getImage("logo"));
+		display.setBackgroundSizeStrategy(BACKGROUND_CONTAIN);
+
+		BetterButton button = new BetterButton("Start");
+		button.addActionListener(() -> {
 			State.enter(CreatorState.class);
 		});
 
-		add(startButton, BorderLayout.SOUTH);
+		add(display, BorderLayout.CENTER);
+		add(button, BorderLayout.SOUTH);
 	}
 
 }

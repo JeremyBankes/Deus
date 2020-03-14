@@ -1,6 +1,5 @@
 package com.jeremy.deus.ui.state;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -17,6 +16,7 @@ import javax.swing.text.PlainDocument;
 import com.jeremy.deus.assets.Assets;
 import com.jeremy.deus.character.CharacterClassType;
 import com.jeremy.deus.item.ItemType;
+import com.jeremy.deus.tools.Dialog;
 import com.jeremy.deus.tools.NameGenerator;
 import com.jeremy.deus.ui.AlphabeticalDocumentFilter;
 import com.jeremy.deus.ui.DeusDisplayConstants;
@@ -181,11 +181,14 @@ public class CreatorState extends State {
 		}
 
 		{ // Begin Adventure
-			JPanel panel = new JPanel(new BorderLayout());
-			panel.setOpaque(false);
+
 			BetterButton button = new BetterButton("Begin Adventure");
-			panel.add(button, BorderLayout.CENTER);
-			add(panel, lay(0, 4, 2, 1, 1.0, 0.0, 5, 5, 5, 5));
+
+			button.addActionListener(() -> {
+				Dialog.showMessage(this, "This game is not yet implemented.");
+			});
+
+			add(button, lay(0, 4, 2, 1, 1.0, 0.0, 5, 5, 5, 5));
 		}
 	}
 
@@ -197,10 +200,10 @@ public class CreatorState extends State {
 		display.setImage(weaponType.getTexture());
 	}
 
-	private static GridBagConstraints lay(int x, int y, int width, int height, double xWeight, double yWeight, int top, int left, int bottom,
-			int right) {
-		return new GridBagConstraints(x, y, width, height, xWeight, yWeight, 256, GridBagConstraints.BOTH, new Insets(top, left, bottom, right), 0,
-				0);
+	private static GridBagConstraints lay( //
+			int x, int y, int width, int height, double xWeight, double yWeight, int top, int left, int bottom, int right //
+	) {
+		return new GridBagConstraints(x, y, width, height, xWeight, yWeight, 256, 1, new Insets(top, left, bottom, right), 0, 0);
 	}
 
 	private static GridBagConstraints lay(int x, int y, int width, int height, double xWeight, double yWeight) {

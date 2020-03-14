@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -13,6 +15,7 @@ import java.awt.event.WindowStateListener;
 import javax.swing.JFrame;
 
 import com.jeremy.deus.assets.Assets;
+import com.jeremy.deus.tools.Dialog;
 import com.jeremy.deus.ui.DeusDisplayConstants;
 import com.jeremy.deus.ui.component.DisplayPanel;
 import com.jeremy.deus.ui.state.AdventureState;
@@ -36,11 +39,14 @@ public class Deus extends JFrame {
 
 	private CardLayout pages;
 
+	private Dimension oldSize;
+
 	private Deus() {
 		super("Deus");
 		pages = new CardLayout();
+		oldSize = new Dimension(760, 600);
 		DisplayPanel content = new DisplayPanel(pages);
-		content.setPreferredSize(new Dimension(760, 600));
+		content.setPreferredSize(oldSize);
 		setContentPane(content);
 		setFocusTraversalKeysEnabled(false);
 		setFocusable(true);
@@ -62,17 +68,27 @@ public class Deus extends JFrame {
 					setUndecorated(true);
 					setExtendedState(MAXIMIZED_BOTH);
 					setVisible(true);
+					Dialog.showMessage(Deus.this, "You have entered fullscreen mode. Press ESC to leave.");
 				}
 			}
 
+		});
+
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent event) {
+				if (getExtendedState() != MAXIMIZED_BOTH) oldSize = getSize();
+			}
 		});
 
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher((KeyEvent event) -> {
 			if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				if (isUndecorated()) {
 					dispose();
-					setExtendedState(NORMAL);
 					setUndecorated(false);
+					setExtendedState(NORMAL);
+					setSize(oldSize);
+					setLocationRelativeTo(null);
 					setVisible(true);
 				}
 			}
@@ -96,7 +112,7 @@ public class Deus extends JFrame {
 		State.register(new AdventureState());
 		State.register(new BattleState());
 
-		State.enter(CreatorState.class);
+		State.enter(SplashState.class);
 	}
 
 	@Override
