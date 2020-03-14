@@ -77,11 +77,14 @@ public class DisplayPanel extends JPanel {
 		this.backgroundSizeStrategy = backgroundSizeStrategy;
 	}
 
+	/**
+	 * Overridden to draw and position 'image' according to 'backgroundSizeStrategy'
+	 */
 	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
+	protected void paintComponent(Graphics graphics) {
+		super.paintComponent(graphics);
 		if (image == null) return;
-
+		
 		int x = 0, y = 0, width = 0, height = 0;
 		int imageWidth = image.getWidth(this);
 		int imageHeight = image.getHeight(this);
@@ -112,7 +115,7 @@ public class DisplayPanel extends JPanel {
 			width = getWidth();
 			height = getHeight();
 		}
-		g.drawImage(getImage(), x, y, width, height, null);
+		graphics.drawImage(getImage(), x, y, width, height, null);
 	}
 
 }

@@ -22,6 +22,17 @@ public class State extends DisplayPanel {
 	private static final HashMap<Class<? extends State>, State> states = new HashMap<>();
 
 	/**
+	 * Registers the state in the <code>com.jeremy.deus.State.states</code> map
+	 * Registered states can be entered using a class rather than an instance.
+	 * 
+	 * @param state The state to register
+	 */
+	public static void register(State state) {
+		Deus.INSTANCE.add(state.getClass().getName(), state);
+		states.put(state.getClass(), state);
+	}
+
+	/**
 	 * @param stateClass The class of the state you wish to enter.
 	 */
 	public static void enter(Class<? extends State> stateClass) {
@@ -33,15 +44,6 @@ public class State extends DisplayPanel {
 	 */
 	public State(LayoutManager layout) {
 		super(layout);
-	}
-
-	/**
-	 * Registers the state in the <code>com.jeremy.deus.State.states</code> map
-	 * Registered states can be entered using a class rather than an instance.
-	 */
-	public void register() {
-		Deus.INSTANCE.add(getClass().getName(), this);
-		states.put(getClass(), this);
 	}
 
 	/**

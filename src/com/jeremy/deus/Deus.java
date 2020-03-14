@@ -8,18 +8,19 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
+import com.jeremy.deus.ui.DeusButtonUI;
+import com.jeremy.deus.ui.state.AdventureState;
+import com.jeremy.deus.ui.state.BattleState;
 import com.jeremy.deus.ui.state.CreatorState;
 import com.jeremy.deus.ui.state.SplashState;
+import com.jeremy.deus.ui.state.State;
 
 /**
+ * 
  * An extended singleton version of <code>javax.swing.JFrame</code> that adds
  * everything required for the Deus game.
  * 
  * @author Jeremy Bankes
- *
- */
-/**
- * @author Jeremy
  *
  */
 
@@ -44,8 +45,19 @@ public class Deus extends JFrame {
 		});
 	}
 
+	/**
+	 * Called right before validating the Deus object. Any pre-game setup should
+	 * be done here.
+	 */
 	private void initiate() {
-		
+		DeusButtonUI.use();
+
+		State.register(new SplashState());
+		State.register(new CreatorState());
+		State.register(new AdventureState());
+		State.register(new BattleState());
+
+		State.enter(SplashState.class);
 	}
 
 	@Override
