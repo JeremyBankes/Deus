@@ -45,6 +45,8 @@ public class CreatorState extends State {
 
 		Assets.loadImage("background", "/background.png");
 		Assets.loadImage("classes", "/classes.png");
+		setOpaque(true);
+		setBackground(DeusDisplayConstants.COLOR_BACKGROUND);
 		setImage(Assets.getImage("background"));
 		setBackgroundSizeStrategy(BACKGROUND_REPEAT);
 
@@ -212,6 +214,7 @@ public class CreatorState extends State {
 	private static JLabel header(String text) {
 		JLabel header = new JLabel(text);
 		header.setFont(DeusDisplayConstants.FONT_HEADER);
+		header.setForeground(DeusDisplayConstants.COLOR_HEADER);
 		header.setBorder(new EmptyBorder(15, 5, 15, 5));
 		return header;
 	}

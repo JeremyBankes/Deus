@@ -24,6 +24,8 @@ public class DeusLabelUI extends BasicLabelUI {
 	@Override
 	protected void installDefaults(JLabel label) {
 		label.setFont(DeusDisplayConstants.FONT_REGULAR);
+		label.setBackground(DeusDisplayConstants.COLOR_COMPONENT);
+		label.setForeground(DeusDisplayConstants.COLOR_TEXT);
 		super.installDefaults(label);
 	}
 

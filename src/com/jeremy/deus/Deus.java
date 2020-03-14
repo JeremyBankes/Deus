@@ -2,8 +2,13 @@ package com.jeremy.deus;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 
 import javax.swing.JFrame;
 
@@ -37,7 +42,8 @@ public class Deus extends JFrame {
 		DisplayPanel content = new DisplayPanel(pages);
 		content.setPreferredSize(new Dimension(760, 600));
 		setContentPane(content);
-
+		setFocusTraversalKeysEnabled(false);
+		setFocusable(true);
 		setMinimumSize(new Dimension(600, 600));
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -46,6 +52,32 @@ public class Deus extends JFrame {
 				dispose();
 			}
 		});
+
+		addWindowStateListener(new WindowStateListener() {
+
+			@Override
+			public void windowStateChanged(WindowEvent event) {
+				if ((event.getNewState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH) {
+					dispose();
+					setUndecorated(true);
+					setExtendedState(MAXIMIZED_BOTH);
+					setVisible(true);
+				}
+			}
+
+		});
+
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher((KeyEvent event) -> {
+			if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (isUndecorated()) {
+					dispose();
+					setExtendedState(NORMAL);
+					setUndecorated(false);
+					setVisible(true);
+				}
+			}
+			return false;
+		});
 	}
 
 	/**
@@ -53,10 +85,11 @@ public class Deus extends JFrame {
 	 * done here.
 	 */
 	private void initiate() {
+		Assets.loadImage("icons", "/icons.png");
 		DeusDisplayConstants.initiate();
 
-		Assets.loadImage("icons", "/icons.png");
 		setIconImage(Assets.sprite("icons", 0, 16, 16));
+		setCursor(Toolkit.getDefaultToolkit().createCustomCursor(Assets.sprite("icons", 2, 16, 16), new Point(), null));
 
 		State.register(new SplashState());
 		State.register(new CreatorState());

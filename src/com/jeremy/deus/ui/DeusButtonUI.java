@@ -34,6 +34,7 @@ public class DeusButtonUI extends BasicButtonUI {
 		button.setBorder(new CompoundBorder(new LineBorder(DeusDisplayConstants.COLOR_BORDER, 1), new EmptyBorder(5, 5, 5, 5)));
 		button.setBackground(DeusDisplayConstants.COLOR_COMPONENT);
 		button.setFont(DeusDisplayConstants.FONT_REGULAR);
+		button.setForeground(DeusDisplayConstants.COLOR_TEXT);
 		button.addChangeListener(event -> {
 			ButtonModel model = button.getModel();
 			if (model.isRollover()) {

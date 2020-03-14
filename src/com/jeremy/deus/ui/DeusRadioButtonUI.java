@@ -55,6 +55,7 @@ public class DeusRadioButtonUI extends BasicRadioButtonUI {
 		button.setIcon(icon);
 		button.setSelectedIcon(selectedIcon);
 		button.setFont(DeusDisplayConstants.FONT_REGULAR);
+		button.setForeground(DeusDisplayConstants.COLOR_TEXT);
 		super.installDefaults(button);
 	}
 
