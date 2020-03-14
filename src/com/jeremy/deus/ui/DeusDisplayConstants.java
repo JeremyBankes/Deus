@@ -8,7 +8,7 @@ import com.jeremy.deus.Deus;
 
 public class DeusDisplayConstants {
 
-	public static final Font FONT_REGULAR = new Font("SimplePixelFONT", Font.PLAIN, 16);
+	public static final Font FONT_REGULAR = new Font("SimplePixelFONT", Font.PLAIN, 24);
 	public static final Font FONT_HEADER = new Font("Fool", Font.PLAIN, 32);
 
 	public static final Color COLOR_BORDER = new Color(0x333333);
@@ -21,6 +21,10 @@ public class DeusDisplayConstants {
 			GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			environment.registerFont(Font.createFont(Font.TRUETYPE_FONT, Deus.class.getResourceAsStream("/font/SimplePixelFONT.ttf")));
 			environment.registerFont(Font.createFont(Font.TRUETYPE_FONT, Deus.class.getResourceAsStream("/font/Fool.ttf")));
+			DeusButtonUI.use();
+			DeusRadioButtonUI.use();
+			DeusLabelUI.use();
+			DeusTextFieldUI.use();
 		} catch (Exception exception) {}
 	}
 

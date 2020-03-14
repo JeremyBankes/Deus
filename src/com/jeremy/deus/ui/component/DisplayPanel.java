@@ -20,6 +20,7 @@ public class DisplayPanel extends JPanel {
 	public static final int BACKGROUND_COVER = 0;
 	public static final int BACKGROUND_CONTAIN = 1;
 	public static final int BACKGROUND_STRETCH = 2;
+	public static final int BACKGROUND_REPEAT = 3;
 
 	private int backgroundSizeStrategy;
 	private Image image;
@@ -27,6 +28,7 @@ public class DisplayPanel extends JPanel {
 	public DisplayPanel(Image image, LayoutManager layout, boolean isDoubleBuffered) {
 		super(layout, isDoubleBuffered);
 		setImage(image);
+		setOpaque(false);
 	}
 
 	public DisplayPanel(Image image, LayoutManager layout) {
@@ -59,6 +61,7 @@ public class DisplayPanel extends JPanel {
 	 */
 	public void setImage(Image image) {
 		this.image = image;
+		repaint();
 	}
 
 	/**
@@ -84,7 +87,7 @@ public class DisplayPanel extends JPanel {
 	protected void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
 		if (image == null) return;
-		
+
 		int x = 0, y = 0, width = 0, height = 0;
 		int imageWidth = image.getWidth(this);
 		int imageHeight = image.getHeight(this);
@@ -114,6 +117,18 @@ public class DisplayPanel extends JPanel {
 		} else if (getBackgroundSizeStrategy() == BACKGROUND_STRETCH) {
 			width = getWidth();
 			height = getHeight();
+		} else if (getBackgroundSizeStrategy() == BACKGROUND_REPEAT) {
+			width = imageWidth;
+			height = imageHeight;
+			while (y < getHeight()) {
+				graphics.drawImage(getImage(), x, y, width, height, null);
+				x += width;
+				if (x > getWidth()) {
+					y += height;
+					x = 0;
+				}
+			}
+			return;
 		}
 		graphics.drawImage(getImage(), x, y, width, height, null);
 	}

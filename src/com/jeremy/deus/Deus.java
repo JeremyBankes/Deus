@@ -7,11 +7,8 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
-import com.jeremy.deus.ui.DeusButtonUI;
+import com.jeremy.deus.assets.Assets;
 import com.jeremy.deus.ui.DeusDisplayConstants;
-import com.jeremy.deus.ui.DeusLabelUI;
-import com.jeremy.deus.ui.DeusRadioButtonUI;
-import com.jeremy.deus.ui.DeusTextFieldUI;
 import com.jeremy.deus.ui.component.DisplayPanel;
 import com.jeremy.deus.ui.state.AdventureState;
 import com.jeremy.deus.ui.state.BattleState;
@@ -38,9 +35,10 @@ public class Deus extends JFrame {
 		super("Deus");
 		pages = new CardLayout();
 		DisplayPanel content = new DisplayPanel(pages);
-		content.setPreferredSize(new Dimension(600, 600));
+		content.setPreferredSize(new Dimension(760, 600));
 		setContentPane(content);
 
+		setMinimumSize(new Dimension(600, 600));
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -56,10 +54,9 @@ public class Deus extends JFrame {
 	 */
 	private void initiate() {
 		DeusDisplayConstants.initiate();
-		DeusButtonUI.use();
-		DeusRadioButtonUI.use();
-		DeusLabelUI.use();
-		DeusTextFieldUI.use();
+
+		Assets.loadImage("icons", "/icons.png");
+		setIconImage(Assets.sprite("icons", 0, 16, 16));
 
 		State.register(new SplashState());
 		State.register(new CreatorState());

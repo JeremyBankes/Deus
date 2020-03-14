@@ -11,9 +11,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.PlainDocument;
 
+import com.jeremy.deus.assets.Assets;
+import com.jeremy.deus.character.CharacterClassType;
+import com.jeremy.deus.item.ItemType;
+import com.jeremy.deus.tools.NameGenerator;
+import com.jeremy.deus.ui.AlphabeticalDocumentFilter;
 import com.jeremy.deus.ui.DeusDisplayConstants;
 import com.jeremy.deus.ui.component.BetterButton;
 import com.jeremy.deus.ui.component.BetterRadioButton;
@@ -38,31 +43,39 @@ public class CreatorState extends State {
 	public CreatorState() {
 		super(new GridBagLayout());
 
+		Assets.loadImage("background", "/background.png");
+		Assets.loadImage("classes", "/classes.png");
+		setImage(Assets.getImage("background"));
+		setBackgroundSizeStrategy(BACKGROUND_REPEAT);
+
 		{ // Title
 			JLabel label = header("Create Your Character");
 			label.setBorder(new EmptyBorder(15, 15, 15, 15));
 			label.setHorizontalAlignment(SwingConstants.CENTER);
-			add(label, lay(0, 0, 2, 1, 1.0, 0.0));
+			add(label, lay(0, 0, 2, 1, 1.0, 0.0, 5, 5, 5, 5));
 		}
 
 		{ // Name panel
 			JPanel panel = new JPanel(new GridBagLayout());
 			panel.setOpaque(false);
-			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 			JLabel label = new JLabel("Name");
 			JTextField field = new JTextField();
-			field.setBorder(new CompoundBorder(new EmptyBorder(0, 5, 0, 5), field.getBorder()));
-			BetterButton button = new BetterButton("Roll");
+			PlainDocument document = (PlainDocument) field.getDocument();
+			document.setDocumentFilter(new AlphabeticalDocumentFilter());
+			BetterButton button = new BetterButton(Assets.sprite("icons", 1, 16, 16));
 			panel.add(label, lay(0, 0, 1, 1, 0.0, 1.0));
-			panel.add(field, lay(1, 0, 1, 1, 1.0, 1.0));
+			panel.add(field, lay(1, 0, 1, 1, 1.0, 1.0, 0, 5, 0, 5));
 			panel.add(button, lay(2, 0, 1, 1, 0.0, 1.0));
-			add(panel, lay(0, 1, 2, 1, 1.0, 0.0));
+			add(panel, lay(0, 1, 2, 1, 1.0, 0.0, 5, 5, 5, 5));
+
+			button.addActionListener(() -> {
+				field.setText(NameGenerator.generateName());
+			});
 		}
 
 		{ // Class select panel
 			JPanel panel = new JPanel(new GridBagLayout());
 			panel.setOpaque(false);
-			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 			JLabel labelTitle = header("Choose a Class");
 			panel.add(labelTitle, lay(0, 0, 2, 1));
 			ButtonGroup group = new ButtonGroup();
@@ -76,15 +89,20 @@ public class CreatorState extends State {
 			panel.add(radio2, lay(0, 2, 1, 1, 0.0, 1.0));
 			panel.add(radio3, lay(0, 3, 1, 1, 0.0, 1.0));
 			DisplayPanel display = new DisplayPanel();
+			display.setBackgroundSizeStrategy(DisplayPanel.BACKGROUND_CONTAIN);
 			panel.add(display, lay(1, 1, 1, 3, 1.0, 1.0));
-			add(panel, lay(0, 2, 1, 1, 1.0, 1.0));
+
+			radio1.addActionListener(() -> chooseCharacterClass(CharacterClassType.WARRIOR, display));
+			radio2.addActionListener(() -> chooseCharacterClass(CharacterClassType.RANGER, display));
+			radio3.addActionListener(() -> chooseCharacterClass(CharacterClassType.MAGE, display));
+
+			add(panel, lay(0, 2, 1, 1, 1.0, 1.0, 5, 5, 5, 5));
 		}
 
-		{ // Skill roll panel
+		{ // Stats roll panel
 			JPanel panel = new JPanel(new GridBagLayout());
 			panel.setOpaque(false);
-			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-			JLabel labelTitle = header("Skills");
+			JLabel labelTitle = header("Stats");
 			panel.add(labelTitle, lay(0, 0, 2, 1));
 			JLabel label1 = new JLabel("Constitution");
 			JLabel label2 = new JLabel("Dexterity");
@@ -104,7 +122,7 @@ public class CreatorState extends State {
 			panel.add(fortitude, lay(1, 3, 1, 1, 0.0, 1.0));
 			panel.add(power, lay(1, 4, 1, 1, 0.0, 1.0));
 
-			BetterButton button = new BetterButton("Reroll");
+			BetterButton button = new BetterButton("Reroll Character Stats");
 			Runnable roll = () -> {
 				constitution.setValue(RNG.nextInt(100) + 1);
 				dexterity.setValue(RNG.nextInt(100) + 1);
@@ -113,15 +131,14 @@ public class CreatorState extends State {
 			};
 			roll.run();
 			button.addActionListener(roll);
-			panel.add(button, lay(0, 5, 2, 1));
+			panel.add(button, lay(0, 5, 2, 1, 1.0, 1.0, 5, 0, 5, 0));
 
-			add(panel, lay(1, 2, 1, 1, 1.0, 1.0));
+			add(panel, lay(1, 2, 1, 1, 1.0, 1.0, 5, 5, 5, 5));
 		}
 
 		{ // Choose class panel
 			JPanel panel = new JPanel(new GridBagLayout());
 			panel.setOpaque(false);
-			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 			JLabel labelTitle1 = header("Choose a Weapon");
 			panel.add(labelTitle1, lay(0, 0, 2, 1));
 			ButtonGroup group = new ButtonGroup();
@@ -135,14 +152,19 @@ public class CreatorState extends State {
 			panel.add(radio2, lay(0, 2, 1, 1, 0.0, 1.0));
 			panel.add(radio3, lay(0, 3, 1, 1, 0.0, 1.0));
 			DisplayPanel display = new DisplayPanel();
+			display.setBackgroundSizeStrategy(DisplayPanel.BACKGROUND_CONTAIN);
 			panel.add(display, lay(1, 1, 1, 3, 1.0, 1.0));
+
+			radio1.addActionListener(() -> chooseWeapon(ItemType.DAGGER, display));
+			radio2.addActionListener(() -> chooseWeapon(ItemType.SHORTSWORD, display));
+			radio3.addActionListener(() -> chooseWeapon(ItemType.RAPIER, display));
+
 			add(panel, lay(0, 3, 1, 1, 1.0, 1.0));
 		}
 
 		{ // Weapon stats panel
 			JPanel panel = new JPanel(new GridBagLayout());
 			panel.setOpaque(false);
-			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 			JLabel labelTitle2 = header("Weapon Stats");
 			panel.add(labelTitle2, lay(3, 0, 3, 1));
 			JLabel label1 = new JLabel("Heightening");
@@ -153,22 +175,34 @@ public class CreatorState extends State {
 			grace = new ValueLabel.Integer(0);
 			panel.add(heightening, lay(4, 1, 1, 1, 0.0, 1.0));
 			panel.add(grace, lay(4, 2, 1, 1, 0.0, 1.0));
-			add(panel, lay(1, 3, 1, 1, 1.0, 1.0));
+			add(panel, lay(1, 3, 1, 1, 1.0, 1.0, 5, 5, 5, 5));
 		}
 
 		{ // Begin Adventure
 			JPanel panel = new JPanel(new BorderLayout());
 			panel.setOpaque(false);
-			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 			BetterButton button = new BetterButton("Begin Adventure");
 			panel.add(button, BorderLayout.CENTER);
-			add(panel, lay(0, 4, 2, 1, 1.0, 0.0));
+			add(panel, lay(0, 4, 2, 1, 1.0, 0.0, 5, 5, 5, 5));
 		}
+	}
 
+	private void chooseCharacterClass(CharacterClassType characterClass, DisplayPanel display) {
+		display.setImage(Assets.sprite("classes", characterClass.ordinal(), 16, 16));
+	}
+
+	private void chooseWeapon(ItemType weaponType, DisplayPanel display) {
+		display.setImage(weaponType.getTexture());
+	}
+
+	private static GridBagConstraints lay(int x, int y, int width, int height, double xWeight, double yWeight, int top, int left, int bottom,
+			int right) {
+		return new GridBagConstraints(x, y, width, height, xWeight, yWeight, 256, GridBagConstraints.BOTH, new Insets(top, left, bottom, right), 0,
+				0);
 	}
 
 	private static GridBagConstraints lay(int x, int y, int width, int height, double xWeight, double yWeight) {
-		return new GridBagConstraints(x, y, width, height, xWeight, yWeight, 256, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
+		return lay(x, y, width, height, xWeight, yWeight, 0, 0, 0, 0);
 	}
 
 	private static GridBagConstraints lay(int x, int y, int width, int height) {
