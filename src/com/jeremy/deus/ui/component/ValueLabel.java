@@ -3,6 +3,8 @@ package com.jeremy.deus.ui.component;
 import java.awt.Color;
 
 import javax.swing.JLabel;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 public class ValueLabel extends JLabel {
@@ -11,7 +13,7 @@ public class ValueLabel extends JLabel {
 		super();
 		setBackground(Color.WHITE);
 		setOpaque(true);
-		setBorder(new LineBorder(Color.BLACK, 1));
+		setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 1), new EmptyBorder(5, 5, 5, 5)));
 		setValue(initialValue);
 	}
 

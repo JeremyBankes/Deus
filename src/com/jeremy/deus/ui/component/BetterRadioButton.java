@@ -29,7 +29,7 @@ public class BetterRadioButton extends JRadioButton {
 
 	/**
 	 * Takes in a Runnable interface parameter instead of a ActionListener to allow
-	 * for lambda actions.
+	 * for lambdas.
 	 * 
 	 * @param runnable A runnable to execute on button fire.
 	 */

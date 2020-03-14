@@ -1,7 +1,6 @@
 package com.jeremy.deus;
 
 import java.awt.CardLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -9,6 +8,11 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 
 import com.jeremy.deus.ui.DeusButtonUI;
+import com.jeremy.deus.ui.DeusDisplayConstants;
+import com.jeremy.deus.ui.DeusLabelUI;
+import com.jeremy.deus.ui.DeusRadioButtonUI;
+import com.jeremy.deus.ui.DeusTextFieldUI;
+import com.jeremy.deus.ui.component.DisplayPanel;
 import com.jeremy.deus.ui.state.AdventureState;
 import com.jeremy.deus.ui.state.BattleState;
 import com.jeremy.deus.ui.state.CreatorState;
@@ -32,9 +36,10 @@ public class Deus extends JFrame {
 
 	private Deus() {
 		super("Deus");
-		final Container content = getContentPane();
-		content.setLayout(pages = new CardLayout());
+		pages = new CardLayout();
+		DisplayPanel content = new DisplayPanel(pages);
 		content.setPreferredSize(new Dimension(600, 600));
+		setContentPane(content);
 
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -46,18 +51,22 @@ public class Deus extends JFrame {
 	}
 
 	/**
-	 * Called right before validating the Deus object. Any pre-game setup should
-	 * be done here.
+	 * Called right before validating the Deus object. Any pre-game setup should be
+	 * done here.
 	 */
 	private void initiate() {
+		DeusDisplayConstants.initiate();
 		DeusButtonUI.use();
+		DeusRadioButtonUI.use();
+		DeusLabelUI.use();
+		DeusTextFieldUI.use();
 
 		State.register(new SplashState());
 		State.register(new CreatorState());
 		State.register(new AdventureState());
 		State.register(new BattleState());
 
-		State.enter(SplashState.class);
+		State.enter(CreatorState.class);
 	}
 
 	@Override

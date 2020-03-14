@@ -4,6 +4,7 @@ import java.awt.LayoutManager;
 import java.util.HashMap;
 
 import com.jeremy.deus.Deus;
+import com.jeremy.deus.ui.DeusDisplayConstants;
 import com.jeremy.deus.ui.component.DisplayPanel;
 
 /**
@@ -44,6 +45,7 @@ public class State extends DisplayPanel {
 	 */
 	public State(LayoutManager layout) {
 		super(layout);
+		setBackground(DeusDisplayConstants.COLOR_BACKGROUND);
 	}
 
 	/**

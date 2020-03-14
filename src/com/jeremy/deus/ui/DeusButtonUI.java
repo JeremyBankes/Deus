@@ -1,8 +1,5 @@
 package com.jeremy.deus.ui;
 
-import java.awt.Color;
-import java.awt.Font;
-
 import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
 import javax.swing.JComponent;
@@ -16,9 +13,6 @@ import javax.swing.plaf.basic.BasicButtonUI;
 public class DeusButtonUI extends BasicButtonUI {
 
 	private final static DeusButtonUI INSTANCE = new DeusButtonUI();
-
-	private static final Color COLOR_NORMAL = new Color(0xFFFFFF);
-	private static final Color COLOR_HOVER = new Color(0xEEEEEE);
 
 	/**
 	 * Makes all Buttons use the DeusButtonUI
@@ -37,17 +31,15 @@ public class DeusButtonUI extends BasicButtonUI {
 	@Override
 	protected void installDefaults(AbstractButton button) {
 		button.setFocusPainted(false);
-		button.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 1), new EmptyBorder(5, 5, 5, 5)));
-		button.setBackground(COLOR_NORMAL);
-		button.setFont(new Font("Consolas", Font.PLAIN, 16));
-		// TODO click sound effect
-		// button.addActionListener(event -> SoundManager.playSound("/button.wav"));
+		button.setBorder(new CompoundBorder(new LineBorder(DeusDisplayConstants.COLOR_BORDER, 1), new EmptyBorder(5, 5, 5, 5)));
+		button.setBackground(DeusDisplayConstants.COLOR_COMPONENT);
+		button.setFont(DeusDisplayConstants.FONT_REGULAR);
 		button.addChangeListener(event -> {
 			ButtonModel model = button.getModel();
 			if (model.isRollover()) {
-				button.setBackground(COLOR_HOVER);
+				button.setBackground(DeusDisplayConstants.COLOR_COMPONENT.darker());
 			} else {
-				button.setBackground(COLOR_NORMAL);
+				button.setBackground(DeusDisplayConstants.COLOR_COMPONENT);
 			}
 		});
 		super.installDefaults(button);

@@ -1,6 +1,6 @@
 package com.jeremy.deus.ui.state;
 
-import java.awt.Color;
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -11,7 +11,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 
+import com.jeremy.deus.ui.DeusDisplayConstants;
 import com.jeremy.deus.ui.component.BetterButton;
 import com.jeremy.deus.ui.component.BetterRadioButton;
 import com.jeremy.deus.ui.component.DisplayPanel;
@@ -36,25 +39,31 @@ public class CreatorState extends State {
 		super(new GridBagLayout());
 
 		{ // Title
-			JLabel label = new JLabel("Create Your Character");
+			JLabel label = header("Create Your Character");
+			label.setBorder(new EmptyBorder(15, 15, 15, 15));
 			label.setHorizontalAlignment(SwingConstants.CENTER);
-			add(label, lay(0, 0, 2, 1));
+			add(label, lay(0, 0, 2, 1, 1.0, 0.0));
 		}
 
 		{ // Name panel
 			JPanel panel = new JPanel(new GridBagLayout());
+			panel.setOpaque(false);
+			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 			JLabel label = new JLabel("Name");
 			JTextField field = new JTextField();
+			field.setBorder(new CompoundBorder(new EmptyBorder(0, 5, 0, 5), field.getBorder()));
 			BetterButton button = new BetterButton("Roll");
 			panel.add(label, lay(0, 0, 1, 1, 0.0, 1.0));
 			panel.add(field, lay(1, 0, 1, 1, 1.0, 1.0));
 			panel.add(button, lay(2, 0, 1, 1, 0.0, 1.0));
-			add(panel, lay(0, 1, 2, 1));
+			add(panel, lay(0, 1, 2, 1, 1.0, 0.0));
 		}
 
 		{ // Class select panel
 			JPanel panel = new JPanel(new GridBagLayout());
-			JLabel labelTitle = new JLabel("Choose a Class");
+			panel.setOpaque(false);
+			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
+			JLabel labelTitle = header("Choose a Class");
 			panel.add(labelTitle, lay(0, 0, 2, 1));
 			ButtonGroup group = new ButtonGroup();
 			BetterRadioButton radio1 = new BetterRadioButton("Warrior");
@@ -67,14 +76,15 @@ public class CreatorState extends State {
 			panel.add(radio2, lay(0, 2, 1, 1, 0.0, 1.0));
 			panel.add(radio3, lay(0, 3, 1, 1, 0.0, 1.0));
 			DisplayPanel display = new DisplayPanel();
-			display.setBackground(Color.GREEN);
 			panel.add(display, lay(1, 1, 1, 3, 1.0, 1.0));
-			add(panel, lay(0, 2, 1, 1));
+			add(panel, lay(0, 2, 1, 1, 1.0, 1.0));
 		}
 
 		{ // Skill roll panel
 			JPanel panel = new JPanel(new GridBagLayout());
-			JLabel labelTitle = new JLabel("Skills");
+			panel.setOpaque(false);
+			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
+			JLabel labelTitle = header("Skills");
 			panel.add(labelTitle, lay(0, 0, 2, 1));
 			JLabel label1 = new JLabel("Constitution");
 			JLabel label2 = new JLabel("Dexterity");
@@ -105,12 +115,14 @@ public class CreatorState extends State {
 			button.addActionListener(roll);
 			panel.add(button, lay(0, 5, 2, 1));
 
-			add(panel, lay(1, 2, 1, 1));
+			add(panel, lay(1, 2, 1, 1, 1.0, 1.0));
 		}
 
-		{ // Bottom
+		{ // Choose class panel
 			JPanel panel = new JPanel(new GridBagLayout());
-			JLabel labelTitle1 = new JLabel("Choose a Weapon");
+			panel.setOpaque(false);
+			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
+			JLabel labelTitle1 = header("Choose a Weapon");
 			panel.add(labelTitle1, lay(0, 0, 2, 1));
 			ButtonGroup group = new ButtonGroup();
 			BetterRadioButton radio1 = new BetterRadioButton("Option I");
@@ -123,10 +135,15 @@ public class CreatorState extends State {
 			panel.add(radio2, lay(0, 2, 1, 1, 0.0, 1.0));
 			panel.add(radio3, lay(0, 3, 1, 1, 0.0, 1.0));
 			DisplayPanel display = new DisplayPanel();
-			display.setBackground(Color.GREEN);
 			panel.add(display, lay(1, 1, 1, 3, 1.0, 1.0));
+			add(panel, lay(0, 3, 1, 1, 1.0, 1.0));
+		}
 
-			JLabel labelTitle2 = new JLabel("Weapon Stats");
+		{ // Weapon stats panel
+			JPanel panel = new JPanel(new GridBagLayout());
+			panel.setOpaque(false);
+			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
+			JLabel labelTitle2 = header("Weapon Stats");
 			panel.add(labelTitle2, lay(3, 0, 3, 1));
 			JLabel label1 = new JLabel("Heightening");
 			JLabel label2 = new JLabel("Grace");
@@ -136,13 +153,16 @@ public class CreatorState extends State {
 			grace = new ValueLabel.Integer(0);
 			panel.add(heightening, lay(4, 1, 1, 1, 0.0, 1.0));
 			panel.add(grace, lay(4, 2, 1, 1, 0.0, 1.0));
-
-			add(panel, lay(0, 3, 2, 1));
+			add(panel, lay(1, 3, 1, 1, 1.0, 1.0));
 		}
 
 		{ // Begin Adventure
+			JPanel panel = new JPanel(new BorderLayout());
+			panel.setOpaque(false);
+			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 			BetterButton button = new BetterButton("Begin Adventure");
-			add(button, lay(0, 4, 2, 1));
+			panel.add(button, BorderLayout.CENTER);
+			add(panel, lay(0, 4, 2, 1, 1.0, 0.0));
 		}
 
 	}
@@ -153,6 +173,13 @@ public class CreatorState extends State {
 
 	private static GridBagConstraints lay(int x, int y, int width, int height) {
 		return lay(x, y, width, height, 1.0, 1.0);
+	}
+
+	private static JLabel header(String text) {
+		JLabel header = new JLabel(text);
+		header.setFont(DeusDisplayConstants.FONT_HEADER);
+		header.setBorder(new EmptyBorder(15, 5, 15, 5));
+		return header;
 	}
 
 }
