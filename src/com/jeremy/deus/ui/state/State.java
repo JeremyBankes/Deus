@@ -1,5 +1,7 @@
 package com.jeremy.deus.ui.state;
 
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.util.HashMap;
 
@@ -40,6 +42,10 @@ public class State extends DisplayPanel {
 		states.get(stateClass).enter();
 	}
 
+	public static <T extends State> T getState(Class<T> stateClass) {
+		return stateClass.cast(states.get(stateClass));
+	}
+
 	/**
 	 * @param layout The layout for components within the state.
 	 */
@@ -53,6 +59,20 @@ public class State extends DisplayPanel {
 	 */
 	public void enter() {
 		Deus.INSTANCE.setState(getClass().getName());
+	}
+
+	protected static GridBagConstraints lay( //
+			int x, int y, int width, int height, double xWeight, double yWeight, int top, int left, int bottom, int right //
+	) {
+		return new GridBagConstraints(x, y, width, height, xWeight, yWeight, 256, 1, new Insets(top, left, bottom, right), 0, 0);
+	}
+
+	protected static GridBagConstraints lay(int x, int y, int width, int height, double xWeight, double yWeight) {
+		return lay(x, y, width, height, xWeight, yWeight, 0, 0, 0, 0);
+	}
+
+	protected static GridBagConstraints lay(int x, int y, int width, int height) {
+		return lay(x, y, width, height, 1.0, 1.0);
 	}
 
 }

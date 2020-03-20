@@ -17,11 +17,8 @@ public class SplashState extends State {
 
 	public SplashState() {
 		super(new BorderLayout());
-
-		Assets.loadImage("background", "/background.png");
-		Assets.loadImage("logo", "/logo.png");
 		setBackgroundSizeStrategy(BACKGROUND_REPEAT);
-		setImage(Assets.getImage("background"));
+		setBackground(Assets.getImage("background"));
 
 		DisplayPanel display = new DisplayPanel(Assets.getImage("logo"));
 		display.setBackgroundSizeStrategy(BACKGROUND_CONTAIN);

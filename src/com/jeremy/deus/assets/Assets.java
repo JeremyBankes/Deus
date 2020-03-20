@@ -11,10 +11,12 @@ public class Assets {
 	private static HashMap<String, BufferedImage> images = new HashMap<>();
 
 	public static void loadImage(String name, String path) {
-		try {
-			images.put(name.toLowerCase(), ImageIO.read(Assets.class.getResourceAsStream(path)));
-		} catch (IOException exception) {
-			exception.printStackTrace();
+		if (!isImageLoaded(name)) {
+			try {
+				images.put(name.toLowerCase(), ImageIO.read(Assets.class.getResourceAsStream(path)));
+			} catch (IOException exception) {
+				exception.printStackTrace();
+			}
 		}
 	}
 

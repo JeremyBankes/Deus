@@ -1,10 +1,10 @@
 package com.jeremy.deus.ui.state;
 
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.util.Enumeration;
 import java.util.Random;
 
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,9 +13,11 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.PlainDocument;
 
+import com.jeremy.deus.Deus;
 import com.jeremy.deus.assets.Assets;
 import com.jeremy.deus.character.CharacterClassType;
-import com.jeremy.deus.item.ItemType;
+import com.jeremy.deus.character.Player;
+import com.jeremy.deus.item.WeaponType;
 import com.jeremy.deus.tools.Dialog;
 import com.jeremy.deus.tools.NameGenerator;
 import com.jeremy.deus.ui.AlphabeticalDocumentFilter;
@@ -37,17 +39,22 @@ public class CreatorState extends State {
 
 	private static final Random RNG = new Random();
 
+	private JTextField playerName;
+
 	private ValueLabel.Integer constitution, dexterity, fortitude, power;
 	private ValueLabel.Integer heightening, grace;
 
+	private CharacterClassType playerClass;
+	private WeaponType weapon;
+
+	private DisplayPanel classDisplay, weaponDisplay;
+	private ButtonGroup weaponButtons;
+
 	public CreatorState() {
 		super(new GridBagLayout());
-
-		Assets.loadImage("background", "/background.png");
-		Assets.loadImage("classes", "/classes.png");
 		setOpaque(true);
 		setBackground(DeusDisplayConstants.COLOR_BACKGROUND);
-		setImage(Assets.getImage("background"));
+		setBackground(Assets.getImage("background"));
 		setBackgroundSizeStrategy(BACKGROUND_REPEAT);
 
 		{ // Title
@@ -61,18 +68,16 @@ public class CreatorState extends State {
 			JPanel panel = new JPanel(new GridBagLayout());
 			panel.setOpaque(false);
 			JLabel label = new JLabel("Name");
-			JTextField field = new JTextField();
-			PlainDocument document = (PlainDocument) field.getDocument();
+			playerName = new JTextField();
+			PlainDocument document = (PlainDocument) playerName.getDocument();
 			document.setDocumentFilter(new AlphabeticalDocumentFilter());
 			BetterButton button = new BetterButton(Assets.sprite("icons", 1, 16, 16));
 			panel.add(label, lay(0, 0, 1, 1, 0.0, 1.0));
-			panel.add(field, lay(1, 0, 1, 1, 1.0, 1.0, 0, 5, 0, 5));
+			panel.add(playerName, lay(1, 0, 1, 1, 1.0, 1.0, 0, 5, 0, 5));
 			panel.add(button, lay(2, 0, 1, 1, 0.0, 1.0));
 			add(panel, lay(0, 1, 2, 1, 1.0, 0.0, 5, 5, 5, 5));
 
-			button.addActionListener(() -> {
-				field.setText(NameGenerator.generateName());
-			});
+			button.addActionListener(() -> playerName.setText(NameGenerator.getName()));
 		}
 
 		{ // Class select panel
@@ -90,13 +95,13 @@ public class CreatorState extends State {
 			panel.add(radio1, lay(0, 1, 1, 1, 0.0, 1.0));
 			panel.add(radio2, lay(0, 2, 1, 1, 0.0, 1.0));
 			panel.add(radio3, lay(0, 3, 1, 1, 0.0, 1.0));
-			DisplayPanel display = new DisplayPanel();
-			display.setBackgroundSizeStrategy(DisplayPanel.BACKGROUND_CONTAIN);
-			panel.add(display, lay(1, 1, 1, 3, 1.0, 1.0));
+			classDisplay = new DisplayPanel();
+			classDisplay.setBackgroundSizeStrategy(DisplayPanel.BACKGROUND_CONTAIN);
+			panel.add(classDisplay, lay(1, 1, 1, 3, 1.0, 1.0));
 
-			radio1.addActionListener(() -> chooseCharacterClass(CharacterClassType.WARRIOR, display));
-			radio2.addActionListener(() -> chooseCharacterClass(CharacterClassType.RANGER, display));
-			radio3.addActionListener(() -> chooseCharacterClass(CharacterClassType.MAGE, display));
+			radio1.addActionListener(() -> chooseCharacterClass(CharacterClassType.WARRIOR));
+			radio2.addActionListener(() -> chooseCharacterClass(CharacterClassType.RANGER));
+			radio3.addActionListener(() -> chooseCharacterClass(CharacterClassType.MAGE));
 
 			add(panel, lay(0, 2, 1, 1, 1.0, 1.0, 5, 5, 5, 5));
 		}
@@ -126,10 +131,10 @@ public class CreatorState extends State {
 
 			BetterButton button = new BetterButton("Reroll Character Stats");
 			Runnable roll = () -> {
-				constitution.setValue(RNG.nextInt(100) + 1);
-				dexterity.setValue(RNG.nextInt(100) + 1);
-				fortitude.setValue(RNG.nextInt(100) + 1);
-				power.setValue(RNG.nextInt(100) + 1);
+				constitution.setValue(RNG.nextInt(50) + 1);
+				dexterity.setValue(RNG.nextInt(50) + 1);
+				fortitude.setValue(RNG.nextInt(50) + 1);
+				power.setValue((constitution.getValue() + dexterity.getValue() + fortitude.getValue()) / 3);
 			};
 			roll.run();
 			button.addActionListener(roll);
@@ -138,28 +143,28 @@ public class CreatorState extends State {
 			add(panel, lay(1, 2, 1, 1, 1.0, 1.0, 5, 5, 5, 5));
 		}
 
-		{ // Choose class panel
+		{ // Choose weapon panel
 			JPanel panel = new JPanel(new GridBagLayout());
 			panel.setOpaque(false);
 			JLabel labelTitle1 = header("Choose a Weapon");
 			panel.add(labelTitle1, lay(0, 0, 2, 1));
-			ButtonGroup group = new ButtonGroup();
-			BetterRadioButton radio1 = new BetterRadioButton("Option I");
-			BetterRadioButton radio2 = new BetterRadioButton("Option II");
-			BetterRadioButton radio3 = new BetterRadioButton("Option III");
-			group.add(radio1);
-			group.add(radio2);
-			group.add(radio3);
+			weaponButtons = new ButtonGroup();
+			BetterRadioButton radio1 = new BetterRadioButton("");
+			BetterRadioButton radio2 = new BetterRadioButton("");
+			BetterRadioButton radio3 = new BetterRadioButton("");
+			weaponButtons.add(radio1);
+			weaponButtons.add(radio2);
+			weaponButtons.add(radio3);
 			panel.add(radio1, lay(0, 1, 1, 1, 0.0, 1.0));
 			panel.add(radio2, lay(0, 2, 1, 1, 0.0, 1.0));
 			panel.add(radio3, lay(0, 3, 1, 1, 0.0, 1.0));
-			DisplayPanel display = new DisplayPanel();
-			display.setBackgroundSizeStrategy(DisplayPanel.BACKGROUND_CONTAIN);
-			panel.add(display, lay(1, 1, 1, 3, 1.0, 1.0));
+			weaponDisplay = new DisplayPanel();
+			weaponDisplay.setBackgroundSizeStrategy(DisplayPanel.BACKGROUND_CONTAIN);
+			panel.add(weaponDisplay, lay(1, 1, 1, 3, 1.0, 1.0));
 
-			radio1.addActionListener(() -> chooseWeapon(ItemType.DAGGER, display));
-			radio2.addActionListener(() -> chooseWeapon(ItemType.SHORTSWORD, display));
-			radio3.addActionListener(() -> chooseWeapon(ItemType.RAPIER, display));
+			radio1.addActionListener(() -> chooseWeapon(WeaponType.getByIndex(playerClass.ordinal() * 3 + 0)));
+			radio2.addActionListener(() -> chooseWeapon(WeaponType.getByIndex(playerClass.ordinal() * 3 + 1)));
+			radio3.addActionListener(() -> chooseWeapon(WeaponType.getByIndex(playerClass.ordinal() * 3 + 2)));
 
 			add(panel, lay(0, 3, 1, 1, 1.0, 1.0));
 		}
@@ -185,33 +190,50 @@ public class CreatorState extends State {
 			BetterButton button = new BetterButton("Begin Adventure");
 
 			button.addActionListener(() -> {
-				Dialog.showMessage(this, "This game is not yet implemented.");
+				if (playerName == null || playerName.getText().length() == 0) {
+					Dialog.showMessage(this, "Please choose a name for your character before continuing!");
+					return;
+				} else if (playerClass == null) {
+					Dialog.showMessage(this, "Please choose a class before continuing!");
+					return;
+				} else if (weapon == null) {
+					Dialog.showMessage(this, "Please choose a weapon before continuing!");
+					return;
+				}
+				Player player = new Player(playerName.getText(), playerClass, constitution.getValue(), dexterity.getValue(), fortitude.getValue());
+				player.setWeaponType(weapon);
+				Deus.INSTANCE.setPlayer(player);
+				State.enter(BattleState.class);
 			});
 
 			add(button, lay(0, 4, 2, 1, 1.0, 0.0, 5, 5, 5, 5));
 		}
 	}
 
-	private void chooseCharacterClass(CharacterClassType characterClass, DisplayPanel display) {
-		display.setImage(Assets.sprite("classes", characterClass.ordinal(), 16, 16));
+	private void chooseCharacterClass(CharacterClassType characterClass) {
+		classDisplay.setBackground(Assets.sprite("classes", characterClass.ordinal(), 300, 220));
+		if (playerClass != characterClass) {
+			playerClass = characterClass;
+			chooseWeapon(weapon);
+			int i = 0;
+			Enumeration<AbstractButton> iterator = weaponButtons.getElements();
+			while (iterator.hasMoreElements()) {
+				AbstractButton button = iterator.nextElement();
+				button.setText(WeaponType.getByIndex(playerClass.ordinal() * 3 + i).toString());
+				i++;
+			}
+		}
 	}
 
-	private void chooseWeapon(ItemType weaponType, DisplayPanel display) {
-		display.setImage(weaponType.getTexture());
-	}
-
-	private static GridBagConstraints lay( //
-			int x, int y, int width, int height, double xWeight, double yWeight, int top, int left, int bottom, int right //
-	) {
-		return new GridBagConstraints(x, y, width, height, xWeight, yWeight, 256, 1, new Insets(top, left, bottom, right), 0, 0);
-	}
-
-	private static GridBagConstraints lay(int x, int y, int width, int height, double xWeight, double yWeight) {
-		return lay(x, y, width, height, xWeight, yWeight, 0, 0, 0, 0);
-	}
-
-	private static GridBagConstraints lay(int x, int y, int width, int height) {
-		return lay(x, y, width, height, 1.0, 1.0);
+	private void chooseWeapon(WeaponType weaponType) {
+		if (weaponType == null) return;
+		weaponType = WeaponType.getByIndex(playerClass.ordinal() * 3 + weaponType.ordinal() % 3);
+		if (weapon != weaponType) {
+			weaponDisplay.setBackground(weaponType.getTexture());
+			weapon = weaponType;
+			heightening.setValue(weapon.getHeightening());
+			grace.setValue(weapon.getGrace());
+		}
 	}
 
 	private static JLabel header(String text) {
